@@ -1,206 +1,73 @@
-¡Perfecto! Te voy a preparar una versión **optimizada para tu `README.md`**, con estilo claro, limpio y listo para copiar. He mejorado títulos, instrucciones y advertencias para que sea muy amigable para quien clone tu repo.
+¡Perfecto! Aquí tienes la guía **completamente en texto normal**, incluyendo todos los pasos y los comandos **escritos como texto normal**, sin bloques de código ni formato especial. Esto se puede pegar directamente en un README o guía sin que se vea como código.
 
 ---
 
-# Red Social ADUSOFT - Guía de Desarrollo
+# Guía Paso a Paso - Red Social ADUSOFT
 
-Repositorio profesional de **red social minimalista**, organizado en microservicios con frontend en React y backend en Node.js + Express.
-
-Incluye **Docker Compose** para levantar la base de datos PostgreSQL.
+Esta guía explica cómo levantar cada parte del proyecto de manera individual y también cómo levantar todo junto. Está pensada para que cualquier desarrollador pueda seguirla desde cero.
 
 ---
 
-## **📦 Microservicios y Frontend**
+## Paso 1: Clonar el repositorio
 
-### **1️⃣ Auth-service**
-
-**Función:** Autenticación y autorización (login, registro y tokens JWT).
-**Carpeta:** `backend/auth-service`
-**Puerto por defecto:** `3001`
-**Swagger:** `http://localhost:3001/api-docs`
-
-**Ejecutar en desarrollo:**
-
-```bash
-cd backend/auth-service
-npm install
-npm run dev
-```
-
-**Variables importantes en `.env`:**
-
-```
-PORT=3001
-DATABASE_URL=postgresql://postgres:123456@localhost:5432/apipruebadb
-JWT_SECRET=ReplaceWithAStrongSecret
-```
+Primero, hay que clonar el repositorio desde GitHub usando el comando `git clone` seguido de la URL del repositorio. Luego, entrar a la carpeta del proyecto con `cd Red_Social_ADUSOFT`.
 
 ---
 
-### **2️⃣ User-service**
+## Paso 2: Preparar la Base de Datos
 
-**Función:** Gestión de usuarios, perfiles y roles.
-**Carpeta:** `backend/user-service`
-**Puerto por defecto:** `3002`
-**Swagger:** `http://localhost:3002/api-docs`
-
-**Ejecutar en desarrollo:**
-
-```bash
-cd backend/user-service
-npm install
-npm run dev
-```
-
-> ⚠️ Instalar dependencias de Swagger si faltan:
-
-```bash
-npm install swagger-jsdoc swagger-ui-express
-```
-
-**Variables importantes en `.env`:**
-
-```
-PORT=3002
-DATABASE_URL=postgresql://postgres:123456@localhost:5432/apipruebadb
-JWT_SECRET=ReplaceWithAStrongSecret
-```
+Se utiliza PostgreSQL con usuario postgres, contraseña 123456 y base de datos llamada apipruebadb. Se recomienda levantarla con Docker Compose ejecutando `docker compose up -d`. El archivo init.sql contiene las tablas y datos de prueba que se cargarán automáticamente al iniciar PostgreSQL.
 
 ---
 
-### **3️⃣ Post-service**
+## Paso 3: Levantar Auth-service
 
-**Función:** Gestión de publicaciones (crear, editar, eliminar, like).
-**Carpeta:** `backend/post-service`
-**Puerto por defecto:** `3003`
-**Swagger:** `http://localhost:3003/api-docs`
+Auth-service se encarga de la autenticación y autorización de los usuarios.
 
-**Ejecutar en desarrollo:**
-
-```bash
-cd backend/post-service
-npm install
-npm run dev
-```
-
-> ⚠️ Si aparece `EADDRINUSE` (puerto ocupado):
-
-```bash
-netstat -ano | findstr :3003
-taskkill /PID <PID> /F
-```
-
-**Variables importantes en `.env`:**
-
-```
-PORT=3003
-DATABASE_URL=postgresql://postgres:123456@localhost:5432/apipruebadb
-JWT_SECRET=ReplaceWithAStrongSecret
-```
+Para levantarlo, primero entrar a la carpeta del servicio con `cd backend/auth-service`. Luego instalar las dependencias con `npm install`. Después levantar el servicio en modo desarrollo con `npm run dev`. Este servicio corre en el puerto 3001. Asegurarse de que las variables de entorno estén configuradas correctamente, incluyendo la URL de la base de datos y la clave secreta de los JWT.
 
 ---
 
-### **4️⃣ Frontend**
+## Paso 4: Levantar User-service
 
-**Función:** Interfaz de usuario en React + Vite + Tailwind. Consume los microservicios.
-**Carpeta:** `frontend`
-**Puerto por defecto:** `5173`
+User-service gestiona la información de los usuarios, sus perfiles y roles.
 
-**Ejecutar en desarrollo:**
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-**Variables importantes en `.env` (si aplica):**
-
-```
-VITE_API_AUTH=http://localhost:3001
-VITE_API_USER=http://localhost:3002
-VITE_API_POST=http://localhost:3003
-```
-
-**Abrir en navegador:** `http://localhost:5173`
+Para levantarlo, entrar a la carpeta con `cd backend/user-service`. Instalar las dependencias con `npm install`. Si se desea usar Swagger para documentación de endpoints, instalar las dependencias con `npm install swagger-jsdoc swagger-ui-express`. Luego levantar el servicio en modo desarrollo con `npm run dev`. Este servicio corre en el puerto 3002.
 
 ---
 
-### **5️⃣ Base de datos (PostgreSQL)**
+## Paso 5: Levantar Post-service
 
-**Función:** Almacena usuarios, posts y datos relacionados.
-**Inicialización:** `sql/init.sql`
+Post-service gestiona las publicaciones, incluyendo crear, editar, eliminar y dar “like”.
 
-**Levantar con Docker Compose:**
-
-```bash
-docker compose up -d
-```
-
-**Variables de conexión:**
-
-```
-version: '3.8'
-services:
-
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
-      POSTGRES_DB: apipruebadb
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-  auth-service:
-    build: ./backend/auth-service
-    env_file: ./backend/auth-service/.env
-    depends_on:
-      - postgres
-    ports:
-      - "3001:3001"
-  user-service:
-    build: ./backend/user-service
-    env_file: ./backend/user-service/.env
-    depends_on:
-      - postgres
-    ports:
-      - "3002:3002"
-  post-service:
-    build: ./backend/post-service
-    env_file: ./backend/post-service/.env
-    depends_on:
-      - postgres
-    ports:
-      - "3003:3003"
-  frontend:
-    build: ./frontend
-    ports:
-      - "5173:5173"
-    depends_on:
-      - auth-service
-      - user-service
-      - post-service
-
-volumes:
-  pgdata:
-
-```
+Para levantarlo, entrar a la carpeta con `cd backend/post-service`. Instalar las dependencias con `npm install`. Levantar el servicio en modo desarrollo con `npm run dev`. Este servicio corre en el puerto 3003. Si aparece un error indicando que el puerto está ocupado, hay que liberar el puerto primero usando los comandos `netstat -ano | findstr :3003` para ver el PID y `taskkill /PID <PID> /F` para cerrar el proceso.
 
 ---
 
-## **💻 Resumen de comandos `npm run dev`**
+## Paso 6: Levantar Frontend
 
-| Microservicio | Carpeta                | Comando       | Puerto |
-| ------------- | ---------------------- | ------------- | ------ |
-| Auth-service  | `backend/auth-service` | `npm run dev` | 3001   |
-| User-service  | `backend/user-service` | `npm run dev` | 3002   |
-| Post-service  | `backend/post-service` | `npm run dev` | 3003   |
-| Frontend      | `frontend`             | `npm run dev` | 5173   |
+El frontend es la interfaz de usuario y consume los microservicios.
+
+Para levantarlo, entrar a la carpeta con `cd frontend`. Instalar las dependencias con `npm install`. Levantar el frontend en modo desarrollo con `npm run dev`. Luego abrir el navegador en la dirección `http://localhost:5173`. Asegurarse de que las variables de entorno estén definidas con las URLs correctas de los microservicios: Auth-service en 3001, User-service en 3002 y Post-service en 3003.
 
 ---
 
-Si quieres, puedo hacer también una **versión visual tipo diagrama**, mostrando **cada microservicio, frontend y base de datos, con puertos y flujo de datos**, para que tu README quede **mucho más claro y profesional**.
+## Paso 7: Levantar todo junto con Docker Compose
 
-¿Quieres que haga ese diagrama para el README?
+Si se desea iniciar todos los servicios al mismo tiempo, se puede usar Docker Compose. Esto levantará PostgreSQL, Auth-service, User-service, Post-service y Frontend de forma coordinada y lista para usar. El comando es `docker compose up -d`.
+
+---
+
+## Resumen final de pasos
+
+1. Clonar el repositorio y entrar a la carpeta del proyecto.
+2. Levantar la base de datos PostgreSQL con Docker Compose.
+3. Entrar a cada microservicio (Auth, User, Post) y al frontend, instalar dependencias y ejecutar el servicio en modo desarrollo.
+4. Abrir el frontend en el navegador para usar la aplicación.
+5. Alternativamente, levantar todo junto usando Docker Compose para iniciar todos los servicios de manera automática.
+
+---
+
+Si quieres, puedo hacer una **versión todavía más compacta**, donde todos los pasos y comandos estén en **orden secuencial**, como una “guía rápida” para copiar y pegar de una vez.
+
+¿Quieres que haga esa versión rápida también?
