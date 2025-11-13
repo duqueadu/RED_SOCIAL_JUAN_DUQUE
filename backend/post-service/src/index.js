@@ -1,0 +1,13 @@
+const express = require('express');
+const cors = require('cors');
+const dotenv = require('dotenv');
+dotenv.config();
+const app = express();
+app.use(cors());
+app.use(express.json());
+const swaggerDocs = require('./swagger');
+swaggerDocs(app);
+const routes = require('./routes');
+app.use('/', routes);
+if (require.main === module) app.listen(process.env.PORT, () => console.log('post-service listening', process.env.PORT));
+module.exports = app;
