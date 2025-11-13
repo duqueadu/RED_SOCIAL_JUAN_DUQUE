@@ -140,11 +140,52 @@ docker compose up -d
 **Variables de conexión:**
 
 ```
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASS=postgres
-DB_NAME=red_social
+version: '3.8'
+services:
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: apipruebadb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  auth-service:
+    build: ./backend/auth-service
+    env_file: ./backend/auth-service/.env
+    depends_on:
+      - postgres
+    ports:
+      - "3001:3001"
+  user-service:
+    build: ./backend/user-service
+    env_file: ./backend/user-service/.env
+    depends_on:
+      - postgres
+    ports:
+      - "3002:3002"
+  post-service:
+    build: ./backend/post-service
+    env_file: ./backend/post-service/.env
+    depends_on:
+      - postgres
+    ports:
+      - "3003:3003"
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - auth-service
+      - user-service
+      - post-service
+
+volumes:
+  pgdata:
+
 ```
 
 ---
