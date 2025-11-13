@@ -56,18 +56,3 @@ Para levantarlo, entrar a la carpeta con `cd frontend`. Instalar las dependencia
 
 Si se desea iniciar todos los servicios al mismo tiempo, se puede usar Docker Compose. Esto levantará PostgreSQL, Auth-service, User-service, Post-service y Frontend de forma coordinada y lista para usar. El comando es `docker compose up -d`.
 
----
-
-## Resumen final de pasos
-
-1. Clonar el repositorio y entrar a la carpeta del proyecto.
-2. Levantar la base de datos PostgreSQL con Docker Compose.
-3. Entrar a cada microservicio (Auth, User, Post) y al frontend, instalar dependencias y ejecutar el servicio en modo desarrollo.
-4. Abrir el frontend en el navegador para usar la aplicación.
-5. Alternativamente, levantar todo junto usando Docker Compose para iniciar todos los servicios de manera automática.
-
----
-
-Si quieres, puedo hacer una **versión todavía más compacta**, donde todos los pasos y comandos estén en **orden secuencial**, como una “guía rápida” para copiar y pegar de una vez.
-
-¿Quieres que haga esa versión rápida también?
