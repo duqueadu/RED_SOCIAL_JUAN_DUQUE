@@ -1,6 +1,4 @@
-¡Perfecto! Aquí tienes la guía **completamente en texto normal**, incluyendo todos los pasos y los comandos **escritos como texto normal**, sin bloques de código ni formato especial. Esto se puede pegar directamente en un README o guía sin que se vea como código.
 
----
 
 # Guía Paso a Paso - Red Social ADUSOFT
 
